@@ -252,8 +252,8 @@ const styles = StyleSheet.create({
   stripDataView: {
     flex: 0.5,
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginLeft: wp('5%'),
+    alignItems: 'flex-end',
+    marginRight: wp('10%'),
   },
   stripText: {
     fontSize: hp('3%'),
