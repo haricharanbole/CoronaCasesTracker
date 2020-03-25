@@ -21,6 +21,7 @@ class MainScreen extends Component {
       loading: true,
     };
     this.processCountryArgument = this.processCountryArgument.bind(this);
+    this.numberWithCommas = this.numberWithCommas.bind(this);
   }
 
   async processCountryArgument() {
@@ -30,10 +31,27 @@ class MainScreen extends Component {
     });
     const response = await fetch('https://corona.lmao.ninja/countries/india');
     const data = await response.json();
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        data[key] = this.numberWithCommas(data[key]);
+      }
+    }
     this.setState({
       data: data,
       loading: false,
     });
+  }
+  numberWithCommas(numberToFormat) {
+    return numberToFormat.toString().split('.')[0].length > 3
+      ? numberToFormat
+          .toString()
+          .substring(0, numberToFormat.toString().split('.')[0].length - 3)
+          .replace(/\B(?=(\d{2})+(?!\d))/g, ',') +
+          ',' +
+          numberToFormat
+            .toString()
+            .substring(numberToFormat.toString().split('.')[0].length - 3)
+      : numberToFormat.toString();
   }
   // {"country":"India","cases":332,"todayCases":83,"deaths":5,"todayDeaths":0,"recovered":23,"active":304,"critical":0,"casesPerOneMillion":0}
   componentDidMount() {
@@ -79,7 +97,7 @@ class MainScreen extends Component {
                   <Text style={styles.stripText}>Today's Cases</Text>
                 </View>
                 <View style={styles.stripDataView}>
-                  <Text style={styles.stripData}>
+                  <Text style={[styles.stripData, {color: 'red'}]}>
                     {this.state.data.todayCases}{' '}
                   </Text>
                 </View>
@@ -89,54 +107,6 @@ class MainScreen extends Component {
                   styles.entryStrip,
                   {
                     backgroundColor: '#E8E8E8',
-                  },
-                ]}>
-                <View style={styles.stripTextView}>
-                  <Text style={styles.stripText}>Total Deaths</Text>
-                </View>
-                <View style={styles.stripDataView}>
-                  <Text style={[styles.stripData, {color: 'red'}]}>
-                    {this.state.data.deaths}
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={[
-                  styles.entryStrip,
-                  {
-                    backgroundColor: '#F0F0F0',
-                  },
-                ]}>
-                <View style={styles.stripTextView}>
-                  <Text style={styles.stripText}>Today's Deaths</Text>
-                </View>
-                <View style={styles.stripDataView}>
-                  <Text style={styles.stripData}>
-                    {this.state.data.todayDeaths}
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={[
-                  styles.entryStrip,
-                  {
-                    backgroundColor: '#F5F5F5',
-                  },
-                ]}>
-                <View style={styles.stripTextView}>
-                  <Text style={styles.stripText}>Recovered Cases</Text>
-                </View>
-                <View style={styles.stripDataView}>
-                  <Text style={[styles.stripData, {color: 'green'}]}>
-                    {this.state.data.recovered}
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={[
-                  styles.entryStrip,
-                  {
-                    backgroundColor: '#F8F8F8',
                   },
                 ]}>
                 <View style={styles.stripTextView}>
@@ -152,7 +122,23 @@ class MainScreen extends Component {
                 style={[
                   styles.entryStrip,
                   {
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: '#F0F0F0',
+                  },
+                ]}>
+                <View style={styles.stripTextView}>
+                  <Text style={styles.stripText}>Recovered Cases</Text>
+                </View>
+                <View style={styles.stripDataView}>
+                  <Text style={[styles.stripData, {color: 'green'}]}>
+                    {this.state.data.recovered}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={[
+                  styles.entryStrip,
+                  {
+                    backgroundColor: '#F5F5F5',
                   },
                 ]}>
                 <View style={styles.stripTextView}>
@@ -161,6 +147,38 @@ class MainScreen extends Component {
                 <View style={styles.stripDataView}>
                   <Text style={[styles.stripData, {color: 'red'}]}>
                     {this.state.data.critical}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={[
+                  styles.entryStrip,
+                  {
+                    backgroundColor: '#F8F8F8',
+                  },
+                ]}>
+                <View style={styles.stripTextView}>
+                  <Text style={styles.stripText}>Total Deaths</Text>
+                </View>
+                <View style={styles.stripDataView}>
+                  <Text style={[styles.stripData, {color: 'black'}]}>
+                    {this.state.data.deaths}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={[
+                  styles.entryStrip,
+                  {
+                    backgroundColor: '#FFFFFF',
+                  },
+                ]}>
+                <View style={styles.stripTextView}>
+                  <Text style={styles.stripText}>Today's Deaths</Text>
+                </View>
+                <View style={styles.stripDataView}>
+                  <Text style={[styles.stripData, {color: 'black'}]}>
+                    {this.state.data.todayDeaths}
                   </Text>
                 </View>
               </View>
@@ -226,22 +244,23 @@ const styles = StyleSheet.create({
     borderTopColor: 'black',
   },
   stripTextView: {
-    flex: 0.6,
+    flex: 0.5,
     justifyContent: 'center',
     alignItems: 'flex-start',
     marginLeft: wp('10%'),
   },
   stripDataView: {
-    flex: 0.4,
+    flex: 0.5,
     justifyContent: 'center',
     alignItems: 'flex-start',
+    marginLeft: wp('5%'),
   },
   stripText: {
     fontSize: hp('3%'),
     fontWeight: 'bold',
   },
   stripData: {
-    fontSize: hp('5%'),
+    fontSize: hp('3%'),
     fontWeight: '700',
   },
   refreshImage: {
