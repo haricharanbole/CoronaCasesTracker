@@ -29,7 +29,9 @@ class MainScreen extends Component {
       data: {},
       loading: true,
     });
-    const response = await fetch('https://corona.lmao.ninja/countries/india');
+    const response = await fetch(
+      'https://corona.lmao.ninja/v2/countries/india',
+    );
     const data = await response.json();
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
@@ -53,7 +55,6 @@ class MainScreen extends Component {
             .substring(numberToFormat.toString().split('.')[0].length - 3)
       : numberToFormat.toString();
   }
-  // {"country":"India","cases":332,"todayCases":83,"deaths":5,"todayDeaths":0,"recovered":23,"active":304,"critical":0,"casesPerOneMillion":0}
   componentDidMount() {
     this.processCountryArgument();
   }
